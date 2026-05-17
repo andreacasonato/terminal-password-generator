@@ -1,4 +1,4 @@
-content = """# Password Generator
+# Password Generator
 
 Generates secure random passwords with configurable length and quantity. Every password always contains uppercase, lowercase, digits, and symbols — no exceptions.
 
@@ -29,10 +29,4 @@ How many passwords? (default 1): 3
 
 - Minimum length is 10 characters
 - Every password always includes lowercase, uppercase, digits, and symbols
-- Uses Python's secrets module — cryptographically secure, not random
-"""
-
-with open('README.md', 'w') as f:
-    f.write(content)
-
-print('Done.')
+- Uses Python's `secrets` module — cryptographically secure, not `random`
