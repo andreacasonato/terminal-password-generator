@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Password Generator: generate secure passwords with configurable options."""
+"""
+Password Generator: generate secure random passwords.
+
+Usage:
+    python3 password.py
+    python3 password.py --length 16 --count 5
+"""
 
 import argparse
 import secrets
@@ -43,27 +49,16 @@ def build_charset() -> str:
     )
 
 
-# Generate one secure password of a given length
 def generate_password(length: int, charset: str) -> str:
-    # Guarantee at least one character from each required group.
     required = [
         secrets.choice(string.ascii_lowercase),
         secrets.choice(string.ascii_uppercase),
         secrets.choice(string.digits),
         secrets.choice(string.punctuation),
     ]
-
-    # Fill the rest of the password with random characters
-    # length - 4 because we already have 4 required characters
     rest = [secrets.choice(charset) for _ in range(length - 4)]
-
-    # Combine required + rest, then shuffle so the required
-    # characters don't always appear at the start
-    # secrets.SystemRandom().shuffle() is the secure version of shuffle
     password_chars = required + rest
     secrets.SystemRandom().shuffle(password_chars)
-
-    # Join the list of characters into a single string
     return "".join(password_chars)
 
 
@@ -80,9 +75,12 @@ def main():
 
     charset = build_charset()
 
-    # Generate and print one password to test
-    password = generate_password(length, charset)
-    print(f"\nGenerated: {password}")
+    # NEW: generate and print all passwords, numbered
+    print()
+    for i in range(count):
+        password = generate_password(length, charset)
+        print(f"  {i + 1}. {password}")
+    print()
 
 
 if __name__ == "__main__":
