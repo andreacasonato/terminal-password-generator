@@ -2,6 +2,7 @@
 """Password Generator: generate secure passwords with configurable options."""
 
 import argparse
+import secrets
 import string
 
 
@@ -33,23 +34,37 @@ def ask_count() -> int:
         return count
 
 
-# Build the character set every password must use
 def build_charset() -> str:
-    lowercase = string.ascii_lowercase
-    uppercase = string.ascii_uppercase
-    digits = string.digits
-    symbols = string.punctuation
+    return (
+        string.ascii_lowercase +
+        string.ascii_uppercase +
+        string.digits +
+        string.punctuation
+    )
 
-    # Concatenate all four into one long string of allowed characters
-    charset = lowercase + uppercase + digits + symbols
 
-    print(f"\nCharacter set: {len(charset)} characters available")
-    print(f"  Lowercase:  {lowercase}")
-    print(f"  Uppercase:  {uppercase}")
-    print(f"  Digits:     {digits}")
-    print(f"  Symbols:    {symbols}")
+# Generate one secure password of a given length
+def generate_password(length: int, charset: str) -> str:
+    # Guarantee at least one character from each required group.
+    required = [
+        secrets.choice(string.ascii_lowercase),
+        secrets.choice(string.ascii_uppercase),
+        secrets.choice(string.digits),
+        secrets.choice(string.punctuation),
+    ]
 
-    return charset
+    # Fill the rest of the password with random characters
+    # length - 4 because we already have 4 required characters
+    rest = [secrets.choice(charset) for _ in range(length - 4)]
+
+    # Combine required + rest, then shuffle so the required
+    # characters don't always appear at the start
+    # secrets.SystemRandom().shuffle() is the secure version of shuffle
+    password_chars = required + rest
+    secrets.SystemRandom().shuffle(password_chars)
+
+    # Join the list of characters into a single string
+    return "".join(password_chars)
 
 
 def main():
@@ -63,10 +78,11 @@ def main():
     length = args.length if args.length and args.length >= 10 else ask_length()
     count = args.count if args.count and args.count >= 1 else ask_count()
 
-    # Build the character set
     charset = build_charset()
 
-    print(f"\nGenerating {count} password(s) of length {length}...")
+    # Generate and print one password to test
+    password = generate_password(length, charset)
+    print(f"\nGenerated: {password}")
 
 
 if __name__ == "__main__":
