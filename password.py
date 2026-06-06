@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Password Generator: generate secure random passwords.
 
